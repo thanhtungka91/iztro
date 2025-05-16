@@ -1164,7 +1164,6 @@ export const getPhuongCatIndex = (earthlyBranchName: EarthlyBranchName) => {
 
   // Start at Xu (Tuất) position, which represents Zi (Tý)
   const startPosition = fixEarthlyBranchIndex('xu');
-  console.log('startPosition', startPosition);
   // Find the position difference between Zi (Tý) and the birth year's earthly branch
   const ziPosition = EARTHLY_BRANCHES.indexOf('ziEarthly');
   const targetPosition = EARTHLY_BRANCHES.indexOf(earthlyBranch);
