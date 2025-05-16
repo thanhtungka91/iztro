@@ -508,7 +508,7 @@ describe('Astrolabe', () => {
         { name: 'Lưu Mã', type: 'tianma', scope: 'yearly' },
       ],
       [{ name: 'Lưu Hỷ', type: 'flower', scope: 'yearly' }],
-      [{ name: 'Niên Giải', type: 'helper', scope: 'yearly' }],
+      [{ name: 'Giải Thần', type: 'helper', scope: 'yearly' }],
       [],
       [],
       [],

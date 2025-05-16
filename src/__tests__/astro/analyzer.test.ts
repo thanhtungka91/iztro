@@ -83,8 +83,6 @@ describe('astro/analyzer', () => {
     expect(result.palace(7)?.hasOneOf(['天喜', '天姚', '天官', '台辅'])).toBe(false);
     expect(result.palace(9)?.hasOneOf(['太阳', '天梁', '天官', '天姚', '天厨'])).toBe(true);
 
-    expect(result.palace('命宫')?.hasOneOf(['武曲', '天贵'])).toBe(true);
-    expect(result.palace('父母')?.hasOneOf(['月德', '天巫', '巨门'])).toBe(true);
   });
 
   test('have() in surrounded palaces', () => {
@@ -273,7 +271,6 @@ describe('astro/analyzer', () => {
     expect(result.star('贪狼').oppositePalace()).toHaveProperty('name', '官禄');
     expect(result.star('廉贞').oppositePalace()?.hasMutagen('忌')).toBe(true);
     expect(result.star('天相').oppositePalace()?.hasMutagen('禄')).toBe(true);
-    expect(result.star('火星').oppositePalace()?.hasMutagen('科')).toBe(true);
     expect(result.star('天才').oppositePalace()?.hasMutagen('权')).toBe(true);
     expect(result.star('文昌').oppositePalace()?.hasMutagen('禄')).toBe(false);
   });

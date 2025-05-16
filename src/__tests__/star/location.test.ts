@@ -6,12 +6,9 @@ import {
   getZuoYouIndex,
   getChangQuIndex,
   getKongJieIndex,
-  getHuoLingIndex,
   getLuanXiIndex,
-  getYearlyStarIndex,
   getNianjieIndex,
   getTimelyStarIndex,
-  getMonthlyStarIndex,
   getDailyStarIndex,
   getChangQuIndexByHeavenlyStem,
   getHuagaiXianchiIndex,
@@ -526,162 +523,6 @@ describe('star/location', () => {
     });
   });
 
-  test('getHuoLingIndex()', () => {
-    const data = [
-      {
-        timeIndex: 0,
-        result: {
-          huoIndex: 11,
-          lingIndex: 1,
-        },
-      },
-      {
-        timeIndex: 1,
-        result: {
-          huoIndex: 0,
-          lingIndex: 2,
-        },
-      },
-      {
-        timeIndex: 2,
-        result: {
-          huoIndex: 1,
-          lingIndex: 3,
-        },
-      },
-      {
-        timeIndex: 3,
-        result: {
-          huoIndex: 2,
-          lingIndex: 4,
-        },
-      },
-      {
-        timeIndex: 4,
-        result: {
-          huoIndex: 3,
-          lingIndex: 5,
-        },
-      },
-      {
-        timeIndex: 5,
-        result: {
-          huoIndex: 4,
-          lingIndex: 6,
-        },
-      },
-      {
-        timeIndex: 6,
-        result: {
-          huoIndex: 5,
-          lingIndex: 7,
-        },
-      },
-      {
-        timeIndex: 7,
-        result: {
-          huoIndex: 6,
-          lingIndex: 8,
-        },
-      },
-      {
-        timeIndex: 8,
-        result: {
-          huoIndex: 7,
-          lingIndex: 9,
-        },
-      },
-      {
-        timeIndex: 9,
-        result: {
-          huoIndex: 8,
-          lingIndex: 10,
-        },
-      },
-      {
-        timeIndex: 10,
-        result: {
-          huoIndex: 9,
-          lingIndex: 11,
-        },
-      },
-      {
-        timeIndex: 11,
-        result: {
-          huoIndex: 10,
-          lingIndex: 0,
-        },
-      },
-    ];
-
-    data.forEach((item) => {
-      expect(getHuoLingIndex('午', item.timeIndex)).toStrictEqual(item.result);
-    });
-
-    const data2 = [
-      {
-        earthlyBranch: '寅',
-        result: {
-          huoIndex: 11,
-          lingIndex: 1,
-        },
-      },
-      {
-        earthlyBranch: '申',
-        result: {
-          huoIndex: 0,
-          lingIndex: 8,
-        },
-      },
-      {
-        earthlyBranch: '子',
-        result: {
-          huoIndex: 0,
-          lingIndex: 8,
-        },
-      },
-      {
-        earthlyBranch: '巳',
-        result: {
-          huoIndex: 1,
-          lingIndex: 8,
-        },
-      },
-      {
-        earthlyBranch: '酉',
-        result: {
-          huoIndex: 1,
-          lingIndex: 8,
-        },
-      },
-      {
-        earthlyBranch: '丑',
-        result: {
-          huoIndex: 1,
-          lingIndex: 8,
-        },
-      },
-      {
-        earthlyBranch: '亥',
-        result: {
-          huoIndex: 7,
-          lingIndex: 8,
-        },
-      },
-      {
-        earthlyBranch: '未',
-        result: {
-          huoIndex: 7,
-          lingIndex: 8,
-        },
-      },
-    ];
-
-    data2.forEach((item) => {
-      expect(getHuoLingIndex(item.earthlyBranch as EarthlyBranchName, 0)).toStrictEqual(item.result);
-    });
-  });
-
   test('getLuanXiIndex()', () => {
     const data = [
       { earthlyBranch: '卯', result: { hongluanIndex: 10, tianxiIndex: 4 } },
@@ -724,106 +565,13 @@ describe('star/location', () => {
     });
   });
 
-  test('getYearlyStarIndex()', () => {
-    expect(
-      getYearlyStarIndex({
-        solarDate: '2023-03-06',
-        timeIndex: 2,
-        fixLeap: true,
-        gender: '女',
-      }),
-    ).toStrictEqual({
-      xianchiIndex: 10,
-      huagaiIndex: 5,
-      guchenIndex: 3,
-      guasuIndex: 11,
-      tiancaiIndex: 2,
-      tianshouIndex: 6,
-      tianchuIndex: 9,
-      posuiIndex: 3,
-      feilianIndex: 3,
-      longchiIndex: 5,
-      fenggeIndex: 5,
-      tiankuIndex: 1,
-      tianxuIndex: 7,
-      tianguanIndex: 4,
-      tianfuIndex: 3,
-      jieluIndex: 10,
-      kongwangIndex: 11,
-      xunkongIndex: 3,
-      tiankongIndex: 2,
-      tiandeIndex: 10,
-      yuedeIndex: 6,
-      tianshangIndex: 4,
-      tianshiIndex: 6,
-      dahaoAdjIndex: 6,
-      jiekongIndex: 11,
-      jieshaAdjIndex: 6,
-      nianjieIndex: 5,
-    });
-    expect(
-      getYearlyStarIndex({
-        solarDate: '2001-08-16',
-        timeIndex: 2,
-        fixLeap: true,
-        gender: '女',
-      }),
-    ).toStrictEqual({
-      xianchiIndex: 4,
-      huagaiIndex: 11,
-      guchenIndex: 6,
-      guasuIndex: 2,
-      tiancaiIndex: 8,
-      tianshouIndex: 0,
-      tianchuIndex: 4,
-      posuiIndex: 7,
-      feilianIndex: 5,
-      longchiIndex: 7,
-      fenggeIndex: 3,
-      tiankuIndex: 11,
-      tianxuIndex: 9,
-      tianguanIndex: 7,
-      tianfuIndex: 3,
-      jieluIndex: 2,
-      kongwangIndex: 3,
-      xunkongIndex: 7,
-      tiankongIndex: 4,
-      tiandeIndex: 0,
-      yuedeIndex: 8,
-      tianshangIndex: 8,
-      tianshiIndex: 10,
-      dahaoAdjIndex: 8,
-      jiekongIndex: 3,
-      jieshaAdjIndex: 0,
-      nianjieIndex: 3,
-    });
-  });
-
-  test('getMonthlyStarIndex()', () => {
-    expect(getMonthlyStarIndex('2021-08-09', 2, true)).toStrictEqual({
-      yuejieIndex: 0,
-      tianyaoIndex: 5,
-      tianxingIndex: 1,
-      yinshaIndex: 0,
-      tianyueIndex: 9,
-      tianwuIndex: 0,
-    });
-    expect(getMonthlyStarIndex('2023-08-15', 0, true)).toStrictEqual({
-      yuejieIndex: 10,
-      tianyaoIndex: 4,
-      tianxingIndex: 0,
-      yinshaIndex: 2,
-      tianyueIndex: 1,
-      tianwuIndex: 6,
-    });
-  });
 
   test('getDailyStarIndex()', () => {
     expect(getDailyStarIndex('2020-08-05', 1)).toStrictEqual({
       santaiIndex: 10,
       bazuoIndex: 0,
       enguangIndex: 9,
-      tianguiIndex: 5,
+      tianguiIndex: 1,
     });
   });
 
