@@ -4,7 +4,7 @@ import { EARTHLY_BRANCHES, FiveElementsClass, HEAVENLY_STEMS, PALACES } from '..
 import {
   EarthlyBranchKey,
   EarthlyBranchName,
-  FiveElementsClassKey,
+  FiveElementsClassKey, GenderName,
   HeavenlyStemKey,
   HeavenlyStemName,
   kot,
@@ -308,7 +308,7 @@ export const getDailyStarIndex = (solarDateStr: string, timeIndex: number, fixLe
   const santaiIndex = fixIndex((zuoIndex + dayIndex) % 12);
   const bazuoIndex = fixIndex((youIndex - dayIndex) % 12);
   const enguangIndex = fixIndex(((changIndex + dayIndex) % 12) - 1);
-  const tianguiIndex = fixIndex(((quIndex + dayIndex) % 12) - 1);
+  const tianguiIndex = fixIndex(((quIndex - dayIndex) % 12) + 1);
 
   return { santaiIndex, bazuoIndex, enguangIndex, tianguiIndex };
 };
@@ -352,61 +352,72 @@ export const getKongJieIndex = (timeIndex: number) => {
 };
 
 /**
- * 获取火星铃星索引（按年支以及时支）
+ * Lấy vị trí sao Linh Tinh và Hỏa Tinh dựa vào địa chi năm sinh, giờ sinh và giới tính
  *
- * - 申子辰人寅戌扬
- * - 寅午戌人丑卯方
- * - 巳酉丑人卯戌位
- * - 亥卯未人酉戌房
- *
- * 起火铃二耀先据出生年支，依口诀定火铃起子时位。
- *
- * 例如壬辰年卯时生人，据[申子辰人寅戌扬]口诀，故火星在寅宫起子时，铃星在戌宫起子时，顺数至卯时，即火星在巳，铃星在丑。
- *
- * @param earthlyBranchName 地支
- * @param timeIndex 时辰序号
- * @returns 火星、铃星索引
+ * @param earthlyBranchName Địa chi năm sinh
+ * @param timeIndex Chỉ số giờ (0-11)
+ * @param gender Giới tính ('male' hoặc 'female')
+ * @returns Vị trí của Linh Tinh và Hỏa Tinh
  */
-export const getHuoLingIndex = (earthlyBranchName: EarthlyBranchName, timeIndex: number) => {
-  let huoIndex = -1;
-  let lingIndex = -1;
-  const fixedTimeIndex = fixIndex(timeIndex);
-  const earthlyBranch = kot<EarthlyBranchKey>(earthlyBranchName, 'Earthly');
+export const getHuoLingIndex = (
+  earthlyBranchName: EarthlyBranchName,
+  timeIndex: number,
+  gender: GenderName
+) => {
+  // Xác định cục tam hợp và điểm khởi đầu
+  let lingStartPosition: EarthlyBranchName;
+  let huoStartPosition: EarthlyBranchName;
 
-  switch (earthlyBranch) {
-    case 'yinEarthly':
-    case 'wuEarthly':
-    case 'xuEarthly': {
-      huoIndex = fixEarthlyBranchIndex('chou') + fixedTimeIndex;
-      lingIndex = fixEarthlyBranchIndex('mao') + fixedTimeIndex;
-      break;
-    }
-    case 'shenEarthly':
-    case 'ziEarthly':
-    case 'chenEarthly': {
-      huoIndex = fixEarthlyBranchIndex('yin') + fixedTimeIndex;
-      lingIndex = fixEarthlyBranchIndex('xu') + fixedTimeIndex;
-      break;
-    }
-    case 'siEarthly':
-    case 'youEarthly':
-    case 'chouEarthly': {
-      huoIndex = fixEarthlyBranchIndex('mao') + fixedTimeIndex;
-      lingIndex = fixEarthlyBranchIndex('xu') + fixedTimeIndex;
-      break;
-    }
-    case 'haiEarthly':
-    case 'weiEarthly':
-    case 'maoEarthly': {
-      huoIndex = fixEarthlyBranchIndex('you') + fixedTimeIndex;
-      lingIndex = fixEarthlyBranchIndex('xu') + fixedTimeIndex;
-      break;
-    }
+  const earthlyBranch = kot<EarthlyBranchKey>(earthlyBranchName, 'Earthly');
+  const fixedTimeIndex = fixIndex(timeIndex);
+
+  // Xác định điểm khởi đầu dựa vào cục tam hợp
+  if (['yinEarthly', 'wuEarthly', 'xuEarthly'].includes(earthlyBranch)) {
+    // Cục Dần-Ngọ-Tuất
+    lingStartPosition = 'mao'; // Linh Tinh khởi tại Mão
+    huoStartPosition = 'chou';  // Hỏa Tinh khởi tại Sửu
+  } else if (['haiEarthly', 'maoEarthly', 'weiEarthly'].includes(earthlyBranch)) {
+    // Cục Hợi-Mão-Mùi
+    lingStartPosition = 'xu';  // Linh Tinh khởi tại Tuất
+    huoStartPosition = 'you';   // Hỏa Tinh khởi tại Dậu
+  } else if (['shenEarthly', 'ziEarthly', 'chenEarthly'].includes(earthlyBranch)) {
+    // Cục Thân-Tý-Thìn
+    lingStartPosition = 'xu';  // Linh Tinh khởi tại Tuất
+    huoStartPosition = 'yin';  // Hỏa Tinh khởi tại Dần
+  } else {
+    // Cục Tỵ-Dậu-Sửu
+    lingStartPosition = 'xu';  // Linh Tinh khởi tại Tuất
+    huoStartPosition = 'mao';   // Hỏa Tinh khởi tại Mão
   }
 
+  // Xác định âm dương của địa chi năm sinh
+  // Địa chi chẵn là dương, lẻ là âm
+  const isYangEarthlyBranch = EARTHLY_BRANCHES.indexOf(earthlyBranch) % 2 === 0;
+
+  // Xác định chiều đi
+  let lingDirection: number;
+  let huoDirection: number;
+
+  if ((gender === 'male' && isYangEarthlyBranch) || (gender === 'female' && !isYangEarthlyBranch)) {
+    // Dương Nam hoặc Âm Nữ
+    lingDirection = -1; // Linh Tinh đi nghịch
+    huoDirection = 1;   // Hỏa Tinh đi thuận
+  } else {
+    // Âm Nam hoặc Dương Nữ
+    lingDirection = 1;  // Linh Tinh đi thuận
+    huoDirection = -1;  // Hỏa Tinh đi nghịch
+  }
+
+  // Tính toán vị trí cuối cùng
+  const lingStartIndex = fixEarthlyBranchIndex(lingStartPosition);
+  const huoStartIndex = fixEarthlyBranchIndex(huoStartPosition);
+
+  const lingIndex = fixIndex(lingStartIndex + (lingDirection * fixedTimeIndex));
+  const huoIndex = fixIndex(huoStartIndex + (huoDirection * fixedTimeIndex));
+
   return {
-    huoIndex: fixIndex(huoIndex),
-    lingIndex: fixIndex(lingIndex),
+    huoIndex,
+    lingIndex
   };
 };
 
@@ -642,6 +653,8 @@ export const getYearlyStarIndex = (param: AstrolabeParam) => {
     // 流耀应该用立春为界，但为了满足不同流派的需求允许配置
     year: horoscopeDivide,
   });
+  const { lunarMonth } = solar2lunar(solarDate);
+
   const { soulIndex, bodyIndex } = getSoulAndBody({ solarDate, timeIndex, fixLeap });
   const heavenlyStem = kot<HeavenlyStemKey>(yearly[0], 'Heavenly');
   const earthlyBranch = kot<EarthlyBranchKey>(yearly[1], 'Earthly');
@@ -731,6 +744,17 @@ export const getYearlyStarIndex = (param: AstrolabeParam) => {
     [tianshiIndex, tianshangIndex] = [tianshangIndex, tianshiIndex];
   }
 
+
+  const thaiTueSeries = getThaiTueSeriesIndex(yearly[1]);
+
+  // Lấy vị trí của sao Thái Tuế (cùng tên với địa chi năm sinh)
+  const thaiTueIndex = fixIndex(fixEarthlyBranchIndex(yearly[1]));
+
+// Tính ngược chiều kim đồng hồ đến tháng sinh (trừ đi số tháng)
+// Sau đó tính thuận chiều kim đồng hồ đến giờ sinh (cộng thêm giờ)
+  const dauQuanIndex = fixIndex(thaiTueIndex - lunarMonth + timeIndex + 1);
+
+
   return {
     xianchiIndex,
     huagaiIndex,
@@ -759,6 +783,47 @@ export const getYearlyStarIndex = (param: AstrolabeParam) => {
     jieshaAdjIndex,
     nianjieIndex,
     dahaoAdjIndex,
+    dauQuanIndex,
+    ...thaiTueSeries,
+  };
+};
+
+/**
+ * Gets the index of the 12 stars in the Thái Tuế series (按年支)
+ *
+ * These 12 stars follow an ordered sequence with Thái Tuế as the base:
+ * 1. Thái Tuế - At the year's earthly branch position
+ * 2. Thiếu Dương - 1 position after Thái Tuế
+ * 3. Tang Môn - 2 positions after Thái Tuế
+ * 4. Thiếu Âm - 3 positions after Thái Tuế
+ * 5. Quan Phù - 4 positions after Thái Tuế
+ * 6. Tử Phù - 5 positions after Thái Tuế
+ * 7. Tuế Phá - 6 positions after Thái Tuế (opposite)
+ * 8. Long Đức - 7 positions after Thái Tuế
+ * 9. Bạch Hổ - 8 positions after Thái Tuế
+ * 10. Phúc Đức - 9 positions after Thái Tuế
+ * 11. Điếu Khách - 10 positions after Thái Tuế
+ * 12. Trực Phù - 11 positions after Thái Tuế
+ *
+ * @param earthlyBranchName Year's earthly branch
+ * @returns Object with indices for all 12 stars
+ */
+export const getThaiTueSeriesIndex = (earthlyBranchName: EarthlyBranchName) => {
+  const baseIndex = fixIndex(fixEarthlyBranchIndex(earthlyBranchName));
+
+  return {
+    thaitueIndex: baseIndex,
+    thieuduongIndex: fixIndex(baseIndex + 1),
+    tangmonIndex: fixIndex(baseIndex + 2),
+    thieuamIndex: fixIndex(baseIndex + 3),
+    quanphuIndex: fixIndex(baseIndex + 4),
+    tuphuIndex: fixIndex(baseIndex + 5),
+    tuephaIndex: fixIndex(baseIndex + 6),
+    longducIndex: fixIndex(baseIndex + 7),
+    bachhoIndex: fixIndex(baseIndex + 8),
+    phucducIndex: fixIndex(baseIndex + 9),
+    dieukhachIndex: fixIndex(baseIndex + 10),
+    trucphuIndex: fixIndex(baseIndex + 11)
   };
 };
 
@@ -828,6 +893,9 @@ export const getMonthlyStarIndex = (solarDate: string, timeIndex: number, fixLea
     fixEarthlyBranchIndex(['si', 'shen', 'yin', 'hai'][monthIndex % 4] as EarthlyBranchName),
   );
 
+  const thiengiaiIndex = fixIndex(fixEarthlyBranchIndex('shen') + monthIndex);
+  const diagiaiIndex = fixIndex(fixEarthlyBranchIndex('wei') + monthIndex);
+
   return {
     yuejieIndex: jieshenIndex,
     tianyaoIndex,
@@ -835,6 +903,8 @@ export const getMonthlyStarIndex = (solarDate: string, timeIndex: number, fixLea
     yinshaIndex,
     tianyueIndex,
     tianwuIndex,
+    thiengiaiIndex,
+    diagiaiIndex,
   };
 };
 
@@ -892,4 +962,191 @@ export const getChangQuIndexByHeavenlyStem = (heavenlyStemName: HeavenlyStemName
   }
 
   return { changIndex, quIndex };
+};
+
+/**
+ * Gets the index of Đào Hoa star based on birth year's earthly branch
+ *
+ * @param earthlyBranchName Birth year's earthly branch
+ * @returns Index of Đào Hoa star position
+ */
+export const getDaoHoaIndex = (earthlyBranchName: EarthlyBranchName) => {
+  const earthlyBranch = kot<EarthlyBranchKey>(earthlyBranchName, 'Earthly');
+
+  let targetBranch: EarthlyBranchName;
+
+  switch (earthlyBranch) {
+    // Tị, Dậu, Sửu -> Ngọ
+    case 'siEarthly':
+    case 'youEarthly':
+    case 'chouEarthly':
+      targetBranch = 'woo';
+      break;
+
+    // Hợi, Mão, Mùi -> Tỵ
+    case 'haiEarthly':
+    case 'maoEarthly':
+    case 'weiEarthly':
+      targetBranch = 'zi';
+      break;
+
+    // Thân, Tý, Thìn -> Dậu
+    case 'shenEarthly':
+    case 'ziEarthly':
+    case 'chenEarthly':
+      targetBranch = 'you';
+      break;
+
+    // Dần, Ngọ, Tuất -> Mão
+    case 'yinEarthly':
+    case 'wuEarthly':  // Changed from 'wooEarthly' to 'wuEarthly'
+    case 'xuEarthly':
+      targetBranch = 'mao';
+      break;
+
+    default:
+      targetBranch = 'zi'; // Default fallback
+  }
+
+  return fixIndex(fixEarthlyBranchIndex(targetBranch));
+};
+
+/**
+ * Gets the index of Lưu Hà star based on birth year's heavenly stem
+ *
+ * @param heavenlyStemName Birth year's heavenly stem
+ * @returns Index of Lưu Hà star position
+ */
+export const getLuuHaIndex = (heavenlyStemName: HeavenlyStemName) => {
+  const heavenlyStem = kot<HeavenlyStemKey>(heavenlyStemName, 'Heavenly');
+
+  let targetBranch: EarthlyBranchName;
+
+  switch (heavenlyStem) {
+    case 'jiaHeavenly':
+      targetBranch = 'you';  // Giáp -> Dậu
+      break;
+    case 'yiHeavenly':
+      targetBranch = 'xu';   // Ất -> Tuất
+      break;
+    case 'bingHeavenly':
+      targetBranch = 'wei';  // Bính -> Mùi
+      break;
+    case 'dingHeavenly':
+      targetBranch = 'chen'; // Đinh -> Thìn
+      break;
+    case 'wuHeavenly':
+      targetBranch = 'si';   // Mậu -> Tỵ
+      break;
+    case 'jiHeavenly':
+      targetBranch = 'woo';  // Kỷ -> Ngọ
+      break;
+    case 'gengHeavenly':
+      targetBranch = 'shen'; // Canh -> Thân
+      break;
+    case 'xinHeavenly':
+      targetBranch = 'mao';  // Tân -> Mão
+      break;
+    case 'renHeavenly':
+      targetBranch = 'hai';  // Nhâm -> Hợi
+      break;
+    case 'guiHeavenly':
+      targetBranch = 'yin';  // Quý -> Dần
+      break;
+    default:
+      targetBranch = 'zi';   // Default fallback
+  }
+
+  return fixIndex(fixEarthlyBranchIndex(targetBranch));
+};
+
+
+/**
+ * Gets the index of Dương Phù star based on birth year's heavenly stem
+ *
+ * @param heavenlyStemName Birth year's heavenly stem
+ * @returns Index of Dương Phù star position
+ */
+export const getDuongPhuIndex = (heavenlyStemName: HeavenlyStemName) => {
+  const heavenlyStem = kot<HeavenlyStemKey>(heavenlyStemName, 'Heavenly');
+
+  let targetBranch: EarthlyBranchName;
+
+  switch (heavenlyStem) {
+    case 'jiaHeavenly':
+      targetBranch = 'wei';  // Giáp -> Mùi
+      break;
+    case 'yiHeavenly':
+      targetBranch = 'shen'; // Ất -> Thân
+      break;
+    case 'bingHeavenly':
+    case 'wuHeavenly':
+      targetBranch = 'xu';   // Bính/Mậu -> Tuất
+      break;
+    case 'dingHeavenly':
+    case 'jiHeavenly':
+      targetBranch = 'hai';  // Đinh/Kỷ -> Hợi
+      break;
+    case 'gengHeavenly':
+      targetBranch = 'chou'; // Canh -> Sửu
+      break;
+    case 'xinHeavenly':
+      targetBranch = 'yin';  // Tân -> Dần
+      break;
+    case 'renHeavenly':
+      targetBranch = 'chen'; // Nhâm -> Thìn
+      break;
+    case 'guiHeavenly':
+      targetBranch = 'si';   // Quý -> Tỵ
+      break;
+    default:
+      targetBranch = 'zi';   // Default fallback
+  }
+
+  return fixIndex(fixEarthlyBranchIndex(targetBranch));
+};
+
+/**
+ * Gets the index of Lưu Niên Văn Tinh star based on birth year's heavenly stem
+ *
+ * @param heavenlyStemName Birth year's heavenly stem
+ * @returns Index of Lưu Niên Văn Tinh star position
+ */
+export const getVanTinhIndex = (heavenlyStemName: HeavenlyStemName) => {
+  const heavenlyStem = kot<HeavenlyStemKey>(heavenlyStemName, 'Heavenly');
+
+  let targetBranch: EarthlyBranchName;
+
+  switch (heavenlyStem) {
+    case 'jiaHeavenly':
+      targetBranch = 'si';    // Giáp -> Tị
+      break;
+    case 'yiHeavenly':
+      targetBranch = 'woo';   // Ất -> Ngọ (fixed 'wu' to 'woo')
+      break;
+    case 'bingHeavenly':
+    case 'wuHeavenly':
+      targetBranch = 'shen';  // Bính/Mậu -> Thân
+      break;
+    case 'dingHeavenly':
+    case 'jiHeavenly':
+      targetBranch = 'you';   // Đinh/Kỷ -> Dậu
+      break;
+    case 'gengHeavenly':
+      targetBranch = 'hai';   // Canh -> Hợi
+      break;
+    case 'xinHeavenly':
+      targetBranch = 'zi';    // Tân -> Tý
+      break;
+    case 'renHeavenly':
+      targetBranch = 'yin';   // Nhâm -> Dần
+      break;
+    case 'guiHeavenly':
+      targetBranch = 'mao';   // Quý -> Mão
+      break;
+    default:
+      targetBranch = 'zi';    // Default fallback
+  }
+
+  return fixIndex(fixEarthlyBranchIndex(targetBranch));
 };
