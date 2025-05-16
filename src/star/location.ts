@@ -1150,3 +1150,68 @@ export const getVanTinhIndex = (heavenlyStemName: HeavenlyStemName) => {
 
   return fixIndex(fixEarthlyBranchIndex(targetBranch));
 };
+
+
+/**
+ * Gets the index of Phượng Cát star based on birth year's earthly branch
+ * Starting from Xu (Tuất) palace as Zi (Tý), then counting counterclockwise
+ * to the birth year's earthly branch
+ *
+ * @param earthlyBranchName Birth year's earthly branch
+ * @returns Index of Phượng Cát star position
+ */
+export const getPhuongCatIndex = (earthlyBranchName: EarthlyBranchName) => {
+  const earthlyBranch = kot<EarthlyBranchKey>(earthlyBranchName, 'Earthly');
+
+  // Start at Xu (Tuất) position, which represents Zi (Tý)
+  const startPosition = fixEarthlyBranchIndex('xu');
+  console.log('startPosition', startPosition);
+  // Find the position difference between Zi (Tý) and the birth year's earthly branch
+  const ziPosition = EARTHLY_BRANCHES.indexOf('ziEarthly');
+  const targetPosition = EARTHLY_BRANCHES.indexOf(earthlyBranch);
+
+
+  // Calculate the difference (counterclockwise direction)
+  const difference = (targetPosition - ziPosition + 12) % 12;
+
+
+  // Apply the difference from the starting position (Xu/Tuất)
+  const phuongCatIndex = fixIndex(startPosition - difference);
+
+  return phuongCatIndex;
+};
+
+
+/**
+ * Tính vị trí sao Đẩu Quân dựa trên năm, tháng và giờ sinh
+ * 1. Bắt đầu từ vị trí Thái Tuế (cung có địa chi trùng với năm sinh)
+ * 2. Đếm ngược chiều kim đồng hồ đến tháng sinh
+ * 3. Từ vị trí đó, coi là giờ Tý và đếm theo chiều kim đồng hồ đến giờ sinh
+ *
+ * @param param Thông số bản mệnh
+ * @returns Chỉ số vị trí sao Đẩu Quân
+ */
+export const getDauQuanIndex = (param: AstrolabeParam) => {
+  const { solarDate, timeIndex } = param;
+  const { yearly } = getHeavenlyStemAndEarthlyBranchBySolarDate(solarDate, timeIndex, {
+    year: getConfig().yearDivide,
+  });
+
+  // Lấy địa chi năm sinh - vị trí Thái Tuế
+  // const thaiTueIndex = fixEarthlyBranchIndex(yearly[1]);
+
+  const thaiTueIndex = fixIndex(fixEarthlyBranchIndex(yearly[1]));
+
+  // Lấy tháng sinh (1-12)
+  const { lunarMonth } = solar2lunar(solarDate);
+  const birthMonth = lunarMonth;
+
+  // Di chuyển ngược chiều kim đồng hồ từ Thái Tuế đến tháng sinh
+  const monthPosition = fixIndex(thaiTueIndex - (birthMonth -1));
+
+  // Từ vị trí tháng, di chuyển thuận chiều kim đồng hồ đến giờ sinh
+  const dauQuanIndex = fixIndex(monthPosition + timeIndex);
+
+
+  return dauQuanIndex;
+};
