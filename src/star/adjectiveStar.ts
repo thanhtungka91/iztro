@@ -13,6 +13,7 @@ import {
 } from './location';
 import { getConfig } from '../astro';
 import { AstrolabeParam } from '../data/types';
+import { fixEarthlyBranchIndex, fixIndex } from '../utils';
 
 export const getQuocAnIndex = (heavenlyStem: string): number => {
   const earthlyBranchIndexMap: Record<string, number> = {
@@ -28,7 +29,12 @@ export const getQuocAnIndex = (heavenlyStem: string): number => {
     癸: 8, // Quý -> Thân
   };
 
-  return earthlyBranchIndexMap[heavenlyStem] || 0;
+  const tyAbsoluteIndex = fixEarthlyBranchIndex('zi'); // Tý has code 'zi'
+
+  const currentIndex =  earthlyBranchIndexMap[heavenlyStem] || 0;
+  const relativePosition = (currentIndex + tyAbsoluteIndex) % 12
+
+  return fixIndex(relativePosition)
 };
 
 /**
@@ -277,6 +283,7 @@ export const getAdjectiveStar = (param: AstrolabeParam) => {
     type: 'adjective',
     scope: 'origin'
   }));
+
   return stars;
 };
 
