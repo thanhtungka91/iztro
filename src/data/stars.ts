@@ -10,27 +10,53 @@ export const MUTAGEN = ['sihuaLu', 'sihuaQuan', 'sihuaKe', 'sihuaJi'] as const;
  */
 export const STARS_INFO = {
   ziweiMaj: {
-    brightness: ['wang', 'wang', 'de', 'wang', 'miao', 'miao', 'wang', 'wang', 'de', 'wang', 'ping', 'miao'],
+    // tử vi
+    // bu: bat // dan    mao     thin      tị    ngọ      mùi     thân    dậu     tuất    hợi      tí      sửu
+    brightness: ['miao', 'ping', 'wang', 'miao', 'miao', 'de', 'miao', 'ping', 'wang', 'ping', 'ping', 'de'],
     fiveElements: '土',
     yinYang: '阴',
   },
   tianjiMaj: {
-    brightness: ['de', 'wang', 'li', 'ping', 'miao', 'xian', 'de', 'wang', 'li', 'ping', 'miao', 'xian'],
+    // thiên cơ
+    //- Miếu địa ở các cung Thìn, Tuất, Mão, Dậu.
+    //
+    // - Vượng địa ở các cung Tỵ, Thân.
+    //
+    // - Đắc địa ở các cung Tý, Ngọ, Sửu, Mùi.
+    //
+    // - Hãm địa ở các cung Dần, Hợi.
+    brightness: ['xian', 'miao', 'miao', 'wang', 'de', 'de', 'wang', 'miao', 'miao', 'xian', 'de', 'de'],
     fiveElements: '木',
     yinYang: '阴',
   },
   taiyangMaj: {
-    brightness: ['wang', 'miao', 'wang', 'wang', 'wang', 'de', 'de', 'xian', 'bu', 'xian', 'xian', 'bu'],
+    // Thái dươpng
+    // Miếu (miao): Tỵ (3), Ngọ (4)
+    //
+    // Vượng (wang): Dần (0), Mão (1), Thìn (2)
+    // Địa (de): Sửu (11), Mùi (5)
+    // Hãm (xian): Thân (6), Dậu (7), Tuất (8), Hợi (9), Tý (10)
+    brightness: ['wang', 'wang', 'wang', 'miao', 'miao', 'de', 'xian', 'xian', 'xian', 'xian', 'xian', 'de'],
     fiveElements: '',
     yinYang: '',
   },
   wuquMaj: {
-    brightness: ['de', 'li', 'miao', 'ping', 'wang', 'miao', 'de', 'li', 'miao', 'ping', 'wang', 'miao'],
+    // Vũ khúc
+    // Miếu (miao): Thìn (2), Tuất (8), Sửu (11), Mùi (5)
+    // Vượng (wang): Dần (0), Thân (6), Tý (10), Ngọ (4)
+    // Địa (de): Mão (1), Dậu (7)
+    // Hãm (xian): Tỵ (3), Hợi (9)
+    brightness: ['wang', 'de', 'miao', 'xian', 'wang', 'miao', 'wang', 'de', 'miao', 'xian', 'wang', 'miao'],
     fiveElements: '金',
     yinYang: '阴',
   },
   tiantongMaj: {
-    brightness: ['li', 'ping', 'ping', 'miao', 'xian', 'bu', 'wang', 'ping', 'ping', 'miao', 'wang', 'bu'],
+    // thiên đồng
+    // Miếu (miao): Dần (0), Thân (6)
+    // Vượng (wang): Tý (10)
+    // Địa (de): Mão (1), Tỵ (3), Hợi (9)
+    // Hãm (xian): Thìn (2), Tuất (8), Sửu (11), Mùi (5), Ngọ (4), Dậu (7)
+    brightness: ['miao', 'de', 'xian', 'de', 'xian', 'xian', 'miao', 'xian', 'xian', 'de', 'wang', 'xian'],
     fiveElements: '水',
     yinYang: '阳',
   },
@@ -45,7 +71,7 @@ export const STARS_INFO = {
     yinYang: '阳',
   },
   taiyinMaj: {
-    brightness: ['wang', 'xian', 'xian', 'xian', 'bu', 'bu', 'li', 'bu', 'wang', 'miao', 'miao', 'miao'],
+    brightness: ['miao', 'ham', 'ham', 'ping', 'miao', 'di', 'miao', 'ham', 'ham', 'wang', 'miao', 'di'],
     fiveElements: '水',
     yinYang: '阴',
   },
@@ -69,21 +95,37 @@ export const STARS_INFO = {
     fiveElements: '土',
     yinYang: '',
   },
-  qishaMaj: {
-    brightness: ['miao', 'wang', 'miao', 'ping', 'wang', 'miao', 'miao', 'miao', 'miao', 'ping', 'wang', 'miao'],
+  qishaMaj: { // that sat
+    // miao: mieu
+    // want: vuong
+    // ping: trung binh
+    // de: dia
+    // ham: ham
+    // bu: bat    // dan   mao   thin      tị       ngọ   mùi     thân    dậu     tuất    hợi      tí      sửu
+    brightness: ['miao', 'xian', 'xian', 'wang', 'miao', 'de', 'miao', 'xian', 'xian', 'wang', 'miao', 'de'],
     fiveElements: '',
     yinYang: '',
   },
   pojunMaj: {
-    brightness: ['de', 'xian', 'wang', 'ping', 'miao', 'wang', 'de', 'xian', 'wang', 'ping', 'miao', 'wang'],
+    // pha quan
+  //   Miếu địa : Tý, Ngọ.
+  // Vượng địa : Sửu, Mùi.
+  // Đắc địa :Thìn, Tuất.
+  // Hãm địa : Mão Dậu, Dần Thân, Tỵ Hợi.
+
+    brightness: ['xian', 'xian', 'de', 'xian', 'miao', 'wang', 'xian', 'xian', 'de', 'xian', 'miao', 'wang'],
     fiveElements: '水',
     yinYang: '',
   },
   wenchangMin: {
-    brightness: ['xian', 'li', 'de', 'miao', 'xian', 'li', 'de', 'miao', 'xian', 'li', 'de', 'miao'],
+    // văn xương
+    // Đắc địa: Thìn, Tuất, Sửu, Mùi, Tỵ, Hợi
+    // Hãm địa: Tý, Dần, Ngọ, Thân
+    brightness: ['xian', '', 'de', 'de', 'xian', 'de', 'xian', '', 'de', 'de', 'xian', 'de'],
+    fiveElements: '金',
   },
   wenquMin: {
-    brightness: ['ping', 'wang', 'de', 'miao', 'xian', 'wang', 'de', 'miao', 'xian', 'wang', 'de', 'miao'],
+    brightness: ['xian', '', 'de', 'de', 'xian', 'de', 'xian', 'xian', 'de', 'de', 'xian', 'de'],
   },
   huoxingMin: {
     brightness: ['miao', 'li', 'xian', 'de', 'miao', 'li', 'xian', 'de', 'miao', 'li', 'xian', 'de'],
