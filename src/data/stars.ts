@@ -82,11 +82,11 @@ export const STARS_INFO = {
   },
   taiyinMaj: {
     // thái âm
-    // Miếu (miao): Dần (0), Thân (6), Tý (10), Ngọ (4)
-    // Vượng (wang): Hợi (9)
+    // Miếu (miao): Dậu (7), Tuất (8), Hợi (9)
+    // Vượng (wang): Thân (6), Tý (10)
     // Địa (de): Sửu (11), Mùi (5)
-    // Hãm (xian): Mão (1), Thìn (2), Tỵ (3), Dậu (7), Tuất (8)
-    brightness: ['miao', 'xian', 'xian', 'xian', 'miao', 'de', 'miao', 'xian', 'xian', 'wang', 'miao', 'de'],
+    // Hãm (xian): Dần (0), Mão (1), Thìn (2), Tỵ (3), Ngọ (4)
+    brightness: ['xian', 'xian', 'xian', 'xian', 'xian', 'de', 'wang', 'miao', 'miao', 'miao', 'wang', 'de'],
     fiveElements: '水',
     yinYang: '阴',
   },
