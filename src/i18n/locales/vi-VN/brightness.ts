@@ -1,9 +1,9 @@
 export default {
   miao: 'Miếu',
   wang: 'Vượng',
-  de: 'Đắc',
+  de: 'Địa',
   li: 'Lợi',
   ping: 'Bình',
   bu: 'Bất',
-  xian: 'Hạn',
+  xian: 'Hãm',
 } as const;

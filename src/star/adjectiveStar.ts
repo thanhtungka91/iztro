@@ -1,18 +1,20 @@
 import { getHeavenlyStemAndEarthlyBranchBySolarDate } from 'lunar-lite';
-import { getDuongPhuIndex, getLuuHaIndex, getYearly12, initStars } from '.';
-import { kot, t } from '../i18n';
+import { getDauQuanIndex, getDuongPhuIndex, getLuuHaIndex, getYearly12, initStars } from '.';
+import { HeavenlyStemKey, kot, t } from '../i18n';
 import FunctionalStar from './FunctionalStar';
 import {
   getDailyStarIndex,
   getDaoHoaIndex,
   getLuanXiIndex,
   getMonthlyStarIndex,
+  getPhuongCatIndex,
   getTimelyStarIndex,
   getVanTinhIndex,
   getYearlyStarIndex,
 } from './location';
 import { getConfig } from '../astro';
 import { AstrolabeParam } from '../data/types';
+import { fixEarthlyBranchIndex, fixIndex } from '../utils';
 
 export const getQuocAnIndex = (heavenlyStem: string): number => {
   const earthlyBranchIndexMap: Record<string, number> = {
@@ -28,7 +30,12 @@ export const getQuocAnIndex = (heavenlyStem: string): number => {
     癸: 8, // Quý -> Thân
   };
 
-  return earthlyBranchIndexMap[heavenlyStem] || 0;
+  const tyAbsoluteIndex = fixEarthlyBranchIndex('zi'); // Tý has code 'zi'
+
+  const currentIndex =  earthlyBranchIndexMap[heavenlyStem] || 0;
+  const relativePosition = (currentIndex + tyAbsoluteIndex) % 12
+
+  return fixIndex(relativePosition)
 };
 
 /**
@@ -87,9 +94,9 @@ export const getAdjectiveStar = (param: AstrolabeParam) => {
   if (algorithm !== 'zhongzhou') {
     // 中州派没有的星耀
     stars[yearlyIndex.jieluIndex].push(new FunctionalStar({ name: t('jielu'), type: 'adjective', scope: 'origin' }));
-    stars[yearlyIndex.kongwangIndex].push(
-      new FunctionalStar({ name: t('kongwang'), type: 'adjective', scope: 'origin' }),
-    );
+    // stars[yearlyIndex.kongwangIndex].push(
+    //   new FunctionalStar({ name: t('kongwang'), type: 'adjective', scope: 'origin' }),
+    // );
   } else {
     // 中州派特有的星耀
     stars[suiqian12.indexOf(t(kot('longde')))].push(
@@ -258,6 +265,22 @@ export const getAdjectiveStar = (param: AstrolabeParam) => {
   const vantinhIndex = getVanTinhIndex(yearly[0]);
   stars[vantinhIndex].push(new FunctionalStar({
     name: t('vantinh'),
+    type: 'adjective',
+    scope: 'origin'
+  }));
+
+  const phuongCacIndex = getPhuongCatIndex(yearly[1]);
+
+  stars[phuongCacIndex].push(new FunctionalStar({
+    name: t('phuongcac'),
+    type: 'adjective',
+    scope: 'origin'
+  }));
+
+  const dauQuanIndex = getDauQuanIndex(param);
+
+  stars[dauQuanIndex].push(new FunctionalStar({
+    name: t('dauquan'),
     type: 'adjective',
     scope: 'origin'
   }));
